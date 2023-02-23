@@ -9,6 +9,9 @@ public class ArrayStorage {
     int count;
 
     void clear() {
+        for (int i = 0; i < count; i++) {
+            storage[i] = null;
+        }
         count = 0;
     }
 
@@ -29,7 +32,9 @@ public class ArrayStorage {
         for (int i = 0; i < count; i++) {
             if (uuid.equals(storage[i].uuid)) {
                 storage[i] = storage[count - 1];
+                storage[count - 1] = null;
                 count--;
+                break;
             }
         }
     }
