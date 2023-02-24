@@ -12,49 +12,58 @@ public class ArrayStorage {
     private Resume[] storage = new Resume[100000];
     private int count;
 
+    public int getIndex(String uuid) {
+        for (int i = 0; i < count; i++) {
+            if (uuid.equals(storage[i].getUuid())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public void clear() {
         Arrays.fill(storage, 0, count, null);
         count = 0;
     }
 
     public void update(Resume resume) {
-        for (int i = 0; i < count; i++) {
-            if (resume.equals(storage[i])) {
-                storage[i] = resume;
-            }
+        int index = getIndex(resume.getUuid());
+        if (index == -1) {
+            System.out.println("ERROR : update");
+        } else {
+            storage[index] = resume;
         }
-        System.out.println("ERROR : update");
     }
 
     public void save(Resume r) {
-        if (!r.equals(storage[count])) {
-            storage[count++] = r;
+        int index = getIndex(r.getUuid());
+        if (index != -1) {
+            System.out.println("ERROR : no resume");
         } else {
-            System.out.println("ERROR : save");
+            storage[count++] = r;
         }
     }
 
     public Resume get(String uuid) {
-        for (int i = 0; i < count; i++) {
-            if (uuid.equals(storage[i].getUuid())) {
-                return storage[i];
-            }
+        int index = getIndex(uuid);
+        if (index == -1) {
+            System.out.println("ERROR : get");
+            return null;
         }
-        System.out.println("ERROR : get");
-        return null;
+        return storage[index];
     }
 
     public void delete(String uuid) {
-        for (int i = 0; i < count; i++) {
-            if (uuid.equals(storage[i].getUuid())) {
-                storage[i] = storage[count - 1];
-                storage[count - 1] = null;
-                count--;
-                break;
-            }
+        int index = getIndex(uuid);
+        if (index == -1) {
+            System.out.println("ERROR : delete");
+        } else {
+            storage[index] = storage[count - 1];
+            storage[count - 1] = null;
+            count--;
         }
-        System.out.println("ERROR : delete");
     }
+
 
     /**
      * @return array, contains only Resumes in storage (without null)
