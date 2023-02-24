@@ -13,7 +13,7 @@ public class ArrayStorage {
     private int count;
 
     public void clear() {
-        Arrays.fill(storage,0,count, null);
+        Arrays.fill(storage, 0, count, null);
         count = 0;
     }
 
