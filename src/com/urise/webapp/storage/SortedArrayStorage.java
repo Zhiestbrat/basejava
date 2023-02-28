@@ -6,14 +6,12 @@ import java.util.Arrays;
 
 
 public class SortedArrayStorage extends AbstractArrayStorage {
-    public void save(Resume resume) {
-        if (count == STORAGE_LIMIT) {
-            System.out.println("Storage overflow");
-        } else if (getIndex(resume.getUuid()) >= 0) {
-            System.out.println("Resume " + resume.getUuid() + " already exist");
+    public void update(Resume resume) {
+        int index = getIndex(resume.getUuid());
+        if (index == -1) {
+            System.out.println("Resume " + resume.getUuid() + " not exist");
         } else {
-            storage[count] = resume;
-            count++;
+            storage[index] = resume;
         }
     }
 
