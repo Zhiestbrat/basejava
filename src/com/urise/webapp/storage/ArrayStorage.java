@@ -6,14 +6,7 @@ import com.urise.webapp.model.Resume;
  * Array based storage for Resumes
  */
 public class ArrayStorage extends AbstractArrayStorage {
-    public void update(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index == -1) {
-            System.out.println("Resume " + resume.getUuid() + " not exist");
-        } else {
-            storage[index] = resume;
-        }
-    }
+
 
     @Override
     protected int getIndex(String uuid) {
@@ -23,5 +16,15 @@ public class ArrayStorage extends AbstractArrayStorage {
             }
         }
         return -1;
+    }
+
+    @Override
+    protected void saveResume(Resume resume, int index) {
+        storage[index] = resume;
+    }
+
+    @Override
+    protected void deleteResume(int index) {
+        storage[index] = storage[count - 1];
     }
 }
