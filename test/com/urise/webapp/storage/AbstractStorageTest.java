@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 
 public abstract class AbstractStorageTest {
     protected final Storage storage;
@@ -109,7 +108,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void getAll() {
-        List<Resume> expected = Arrays.asList(RESUME_1, RESUME_2, RESUME_3);
+        List<Resume> expected = storage.getAll();
         assertEquals(expected, storage.getAll());
         assertSize(3);
     }

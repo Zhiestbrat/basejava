@@ -1,53 +1,60 @@
 package com.urise.webapp.storage;
 
 import com.urise.webapp.model.Resume;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListStorage extends AbstractStorage {
+public class ListStorage extends AbstractStorage<Integer> {
     private final List<Resume> listResume = new ArrayList<>();
 
     @Override
-    protected void clearAll() {
+    public void clear() {
         listResume.clear();
     }
 
     @Override
-    protected int sizeAll() {
+    public int size() {
         return listResume.size();
     }
 
     @Override
     protected List<Resume> getAllSorted() {
-        return listResume;
+        return new ArrayList<>(listResume);
     }
 
     @Override
-    protected void updateResumeAll(Resume resume, int index) {
-        listResume.set(index, resume);
+    protected void doUpdate(Resume resume, Integer searchKey) {
+        listResume.set(searchKey, resume);
     }
 
     @Override
-    protected Resume getResume(int index) {
-        return listResume.get(index);
+    protected Resume doGet(Integer searchKey) {
+        return listResume.get(searchKey);
     }
 
     @Override
-    protected void saveResumeAll(Resume resume, int index) {
+    protected void doSave(Resume resume, Integer searchKey) {
         listResume.add(resume);
     }
 
     @Override
-    protected void deleteResumeAll(int index) {
-        listResume.remove(index);
+    protected void doDelete(Integer searchKey) {
+        listResume.remove(listResume.get(searchKey));
     }
 
-    protected int getIndex(String uuid) {
+    @Override
+    protected boolean isExist(Integer searchKey) {
+        return searchKey != null;
+    }
+
+    @Override
+    protected Integer getSearchKey(String uuid) {
         for (int i = 0; i < listResume.size(); i++) {
             if (uuid.equals(listResume.get(i).getUuid())) {
                 return i;
             }
         }
-        return -1;
+        return null;
     }
 }
