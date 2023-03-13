@@ -9,8 +9,8 @@ import java.util.List;
 
 public abstract class AbstractStorage<E> implements Storage {
     public final Resume get(String uuid) {
-        E key = getNotExistingSearchKey(uuid);
-        return doGet(key);
+        getNotExistingSearchKey(uuid);
+        return doGet(getSearchKey(uuid));
     }
 
     public final List<Resume> getAll() {
@@ -18,32 +18,30 @@ public abstract class AbstractStorage<E> implements Storage {
     }
 
     public final void save(Resume resume) {
-        E keySearch = getExistingSearchKey(resume.getUuid());
-        doSave(resume, keySearch);
+        getExistingSearchKey(resume.getUuid());
+        doSave(resume, getSearchKey(resume.getUuid()));
     }
 
     public final void update(Resume resume) {
-        E key = getNotExistingSearchKey(resume.getUuid());
-        doUpdate(resume, key);
+        getNotExistingSearchKey(resume.getUuid());
+        doUpdate(resume, getSearchKey(resume.getUuid()));
     }
 
     public final void delete(String uuid) {
-       E key = getNotExistingSearchKey(uuid);
-       doDelete(key);
+       getNotExistingSearchKey(uuid);
+       doDelete(getSearchKey(uuid));
     }
-    private E getNotExistingSearchKey(String uuid) {
+    private void getNotExistingSearchKey(String uuid) {
         E key = getSearchKey(uuid);
         if(!isExist(key)) {
             throw new NotExistStorageException(uuid);
         }
-        return key;
     }
-    private E getExistingSearchKey(String uuid) {
+    private void getExistingSearchKey(String uuid) {
         E key = getSearchKey(uuid);
         if(isExist(key)) {
             throw new ExistStorageException(uuid);
         }
-        return key;
     }
 
     protected abstract List<Resume> getAllSorted();
