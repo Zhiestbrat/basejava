@@ -6,14 +6,11 @@ import com.urise.webapp.model.Resume;
 
 import java.util.List;
 
-public abstract class AbstractStorage implements Storage {
 
+public abstract class AbstractStorage<E> implements Storage {
     public final Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        }
-        return getResume(index);
+        E key = getNotExistingSearchKey(uuid);
+        return doGet(key);
     }
 
     public final List<Resume> getAll() {
@@ -21,52 +18,44 @@ public abstract class AbstractStorage implements Storage {
     }
 
     public final void save(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index >= 0) {
-            throw new ExistStorageException(resume.getUuid());
-        } else {
-            saveResumeAll(resume, index);
-        }
+        E keySearch = getExistingSearchKey(resume.getUuid());
+        doSave(resume, keySearch);
     }
 
     public final void update(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index < 0) {
-            throw new NotExistStorageException(resume.getUuid());
-        } else {
-            updateResumeAll(resume, index);
-        }
+        E key = getNotExistingSearchKey(resume.getUuid());
+        doUpdate(resume, key);
     }
 
     public final void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
+       E key = getNotExistingSearchKey(uuid);
+       doDelete(key);
+    }
+    private E getNotExistingSearchKey(String uuid) {
+        E key = getSearchKey(uuid);
+        if(!isExist(key)) {
             throw new NotExistStorageException(uuid);
-        } else {
-            deleteResumeAll(index);
         }
+        return key;
     }
-
-    public final void clear() {
-        clearAll();
+    private E getExistingSearchKey(String uuid) {
+        E key = getSearchKey(uuid);
+        if(isExist(key)) {
+            throw new ExistStorageException(uuid);
+        }
+        return key;
     }
-
-    public final int size() {
-        return sizeAll();
-    }
-    protected abstract int sizeAll();
-
-    protected abstract void clearAll();
 
     protected abstract List<Resume> getAllSorted();
 
-    protected abstract void updateResumeAll(Resume resume, int index);
+    protected abstract void doUpdate(Resume resume, E searchKey);
 
-    protected abstract Resume getResume(int index);
+    protected abstract Resume doGet(E searchKey);
 
-    protected abstract void saveResumeAll(Resume resume, int index);
+    protected abstract void doSave(Resume resume, E searchKey);
 
-    protected abstract void deleteResumeAll(int index);
+    protected abstract void doDelete(E searchKey);
 
-    protected abstract int getIndex(String uuid);
+    protected abstract boolean isExist(E searchKey);
+    protected abstract E getSearchKey(String uuid);
 }

@@ -10,16 +10,16 @@ import java.util.List;
 /**
  * Array based storage for Resumes
  */
-public abstract class AbstractArrayStorage extends AbstractStorage {
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected static final int STORAGE_LIMIT = 100000;
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int count;
 
-    protected int sizeAll() {
+    public int size() {
         return count;
     }
 
-    protected void clearAll() {
+    public void clear() {
         Arrays.fill(storage, 0, count, null);
         count = 0;
     }
@@ -30,33 +30,44 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void updateResumeAll(Resume resume, int index) {
-        storage[index] = resume;
+    protected void doUpdate(Resume resume, Integer searchKey) {
+        storage[searchKey] = resume;
     }
 
     @Override
-    protected Resume getResume(int index) {
-        return storage[index];
+    protected Resume doGet(Integer searchKey) {
+        return storage[searchKey];
     }
 
     @Override
-    protected void saveResumeAll(Resume resume, int index) {
+    protected void doSave(Resume resume, Integer searchKey) {
         if (count == STORAGE_LIMIT) {
             throw new StorageException("Storage overflow", resume.getUuid());
         } else {
-            saveResume(resume, index);
+            saveResume(resume, searchKey);
             count++;
         }
     }
 
     @Override
-    protected void deleteResumeAll(int index) {
-        deleteResume(index);
+    protected void doDelete(Integer searchKey) {
+        deleteResume(searchKey);
         storage[count - 1] = null;
         count--;
     }
 
-    protected abstract void saveResume(Resume resume, int index);
+    @Override
+    protected boolean isExist(Integer searchKey) {
+        return searchKey >= 0;
+    }
 
+    @Override
+    protected Integer getSearchKey(String uuid) {
+        return getIndex(uuid);
+    }
+
+
+    protected abstract void saveResume(Resume resume, int index);
+    protected abstract int getIndex(String uuid);
     protected abstract void deleteResume(int index);
 }
