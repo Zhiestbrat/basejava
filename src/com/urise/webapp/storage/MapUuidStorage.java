@@ -4,47 +4,47 @@ import com.urise.webapp.model.Resume;
 
 import java.util.*;
 
-public class MapStorage extends AbstractStorage<String> {
-    private final Map<String, Resume> resumeMap = new HashMap<>();
+public class MapUuidStorage extends AbstractStorage<String> {
+    private final Map<String, Resume> uuidMap = new HashMap<>();
 
     @Override
     public int size() {
-        return resumeMap.size();
+        return uuidMap.size();
     }
 
     @Override
     public void clear() {
-        resumeMap.clear();
+        uuidMap.clear();
     }
 
     @Override
-    protected List<Resume> getAllSorted() {
-        return new ArrayList<>(resumeMap.values());
+    protected List<Resume> getList() {
+        return new ArrayList<>(uuidMap.values());
     }
 
     @Override
     protected void doUpdate(Resume resume, String searchKey) {
-        resumeMap.put(searchKey, resume);
+        uuidMap.put(searchKey, resume);
     }
 
     @Override
     protected Resume doGet(String searchKey) {
-        return resumeMap.get(searchKey);
+        return uuidMap.get(searchKey);
     }
 
     @Override
     protected void doSave(Resume resume, String searchKey) {
-        resumeMap.put(searchKey, resume);
+        uuidMap.put(searchKey, resume);
     }
 
     @Override
     protected void doDelete(String searchKey) {
-        resumeMap.remove(searchKey);
+        uuidMap.remove(searchKey);
     }
 
     @Override
     protected boolean isExist(String searchKey) {
-        return resumeMap.containsKey(searchKey);
+        return uuidMap.containsKey(searchKey);
     }
 
     @Override

@@ -19,6 +19,8 @@ public abstract class AbstractStorageTest {
     private static final String UUID_3 = "uuid3";
     private static final String UUID_4 = "uuid4";
     private static final String UUID_NOT_EXIST = "uuidNotExist";
+    private static final String fullName_1 = "Ivan";
+    private static final String fullName_2 = "Danil";
     private static final Resume RESUME_1;
     private static final Resume RESUME_2;
     private static final Resume RESUME_3;
@@ -31,6 +33,9 @@ public abstract class AbstractStorageTest {
         RESUME_3 = new Resume(UUID_3);
         RESUME_4 = new Resume(UUID_4);
         RESUME_NOT_EXIST = new Resume(UUID_NOT_EXIST);
+        RESUME_1.setFullName(fullName_1);
+        RESUME_2.setFullName(fullName_2);
+        RESUME_3.setFullName(fullName_2);
     }
 
     protected AbstractStorageTest(Storage storage) {
@@ -103,13 +108,13 @@ public abstract class AbstractStorageTest {
         storage.clear();
         assertSize(0);
         List<Resume> expected = new ArrayList<>();
-        assertEquals(expected, storage.getAll());
+        assertEquals(expected, storage.getAllSorted());
     }
 
     @Test
-    public void getAll() {
-        List<Resume> expected = storage.getAll();
-        assertEquals(expected, storage.getAll());
+    public void getAllSorted() {
+        List<Resume> expected = storage.getAllSorted();
+        assertEquals(expected, storage.getAllSorted());
         assertSize(3);
     }
 
