@@ -19,8 +19,8 @@ public class ListStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    protected List<Resume> getAllSorted() {
-        return new ArrayList<>(listResume);
+    protected List<Resume> getList() {
+        return this.listResume;
     }
 
     @Override

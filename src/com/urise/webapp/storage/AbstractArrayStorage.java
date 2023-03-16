@@ -4,8 +4,7 @@ package com.urise.webapp.storage;
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Array based storage for Resumes
@@ -25,49 +24,45 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    protected List<Resume> getAllSorted() {
-        return List.of(Arrays.copyOfRange(storage, 0, count));
+    protected List<Resume> getList() {
+        return Arrays.asList(Arrays.copyOfRange(storage, 0, count));
     }
 
     @Override
-    protected void doUpdate(Resume resume, Integer searchKey) {
-        storage[searchKey] = resume;
+    protected void doUpdate(Resume resume, Integer index) {
+        storage[index] = resume;
     }
 
     @Override
-    protected Resume doGet(Integer searchKey) {
-        return storage[searchKey];
+    protected Resume doGet(Integer index) {
+        return storage[index];
     }
 
     @Override
-    protected void doSave(Resume resume, Integer searchKey) {
+    protected void doSave(Resume resume, Integer index) {
         if (count == STORAGE_LIMIT) {
             throw new StorageException("Storage overflow", resume.getUuid());
         } else {
-            saveResume(resume, searchKey);
+            saveResume(resume, index);
             count++;
         }
     }
 
     @Override
-    protected void doDelete(Integer searchKey) {
-        deleteResume(searchKey);
+    protected void doDelete(Integer index) {
+        deleteResume(index);
         storage[count - 1] = null;
         count--;
     }
 
     @Override
-    protected boolean isExist(Integer searchKey) {
-        return searchKey >= 0;
+    protected boolean isExist(Integer index) {
+        return index >= 0;
     }
-
-    @Override
-    protected Integer getSearchKey(String uuid) {
-        return getIndex(uuid);
-    }
-
 
     protected abstract void saveResume(Resume resume, int index);
-    protected abstract int getIndex(String uuid);
+
+    protected abstract Integer getSearchKey(String uuid);
+
     protected abstract void deleteResume(int index);
 }
