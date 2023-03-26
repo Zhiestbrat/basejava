@@ -11,13 +11,13 @@ public class MapResumeStorage extends AbstractStorage<Resume> {
     private final Map<String, Resume> resumeMap = new HashMap<>();
 
     @Override
-    protected List<Resume> getList() {
+    protected List<Resume> doCopyAll() {
         return new ArrayList<>(resumeMap.values());
     }
 
     @Override
     protected void doUpdate(Resume resume, Resume searchKey) {
-        resumeMap.put(searchKey.getUuid(), resume);
+        resumeMap.put(resume.getUuid(), resume);
     }
 
     @Override
