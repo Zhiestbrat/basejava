@@ -3,11 +3,7 @@ package com.urise.webapp.model;
 import java.util.Objects;
 
 public class TextSection extends AbstractSection {
-    private String contact;
-
-    public TextSection() {
-
-    }
+    private final String contact;
 
     public TextSection(String contact) {
         Objects.requireNonNull(contact, "contact must not be null");

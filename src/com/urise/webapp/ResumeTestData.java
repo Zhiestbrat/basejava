@@ -6,15 +6,17 @@ import java.time.Month;
 import java.util.List;
 
 public class ResumeTestData {
-    public static void main(String[] args) {
-        Resume resume = new Resume("Григорий Кислин");
-        resume.setContectType(ContectType.TELEPHONE, "+7(921) 855-0482");
-        resume.setContectType(ContectType.SKYPE, "skype:grigory.kislin");
-        resume.setContectType(ContectType.MAIL, "gkislin@yandex.ru");
-        resume.setContectType(ContectType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
-        resume.setContectType(ContectType.GITHUB, "https://github.com/gkislin");
-        resume.setContectType(ContectType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
-        resume.setContectType(ContectType.HOMEPAGE, "http://gkislin.ru/");
+    public static Resume getResume(String uuid, String fullName) {
+
+        Resume resume = new Resume(uuid, fullName);
+
+        resume.setContactType(ContactType.TELEPHONE, "+7(921) 855-0482");
+        resume.setContactType(ContactType.SKYPE, "skype:grigory.kislin");
+        resume.setContactType(ContactType.MAIL, "gkislin@yandex.ru");
+        resume.setContactType(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
+        resume.setContactType(ContactType.GITHUB, "https://github.com/gkislin");
+        resume.setContactType(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
+        resume.setContactType(ContactType.HOME_PAGE, "http://gkislin.ru/");
 
         resume.setSectionType(SectionType.OBJECTIVE,
                 new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
@@ -38,27 +40,11 @@ public class ResumeTestData {
         resume.setSectionType(SectionType.EXPERIENCE, new OrganizationSection(List.of(new Organization("Java Online Projects", "http://javaops.ru/", new Period(2013, Month.of(10), "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок.")),
                 new Organization("Wrike", "Wrike", new Period(2014, Month.of(10), 2016, Month.of(1), "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."))
         )));
-        resume.setSectionType(SectionType.EDUCATION, new OrganizationSection(List.of(new Organization("Coursera", "https://www.coursera.org/course/progfun", new Period(2013,Month.of(3),2013,Month.of(5), "'Functional Programming Principles in Scala' by Martin Odersky", " ")),
+        resume.setSectionType(SectionType.EDUCATION, new OrganizationSection(List.of(new Organization("Coursera", "https://www.coursera.org/course/progfun", new Period(2013, Month.of(3), 2013, Month.of(5), "'Functional Programming Principles in Scala' by Martin Odersky", " ")),
                 new Organization("Luxoft", "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366", new Period(2011, Month.of(3), 2011, Month.of(4), "Курс 'Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.'", " ")),
                 new Organization("Siemens AG", "http://www.siemens.ru/", new Period(2005, Month.of(1), 2005, Month.of(4), "3 месяца обучения мобильным IN сетям (Берлин)", " ")),
-                new Organization("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "http://www.ifmo.ru/", List.of(new Period(1993, Month.of(9), 1996, Month.of(7), "Аспирантура (программист С, С++)", " "), new Period(1987, Month.of(9), 1993, Month.of(7), "Инженер (программист Fortran, C)", "")))
+                new Organization(new Link("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "http://www.ifmo.ru/"), List.of(new Period(1993, Month.of(9), 1996, Month.of(7), "Аспирантура (программист С, С++)", " "), new Period(1987, Month.of(9), 1993, Month.of(7), "Инженер (программист Fortran, C)", "")))
         )));
-
-
-        System.out.println(resume.getFullName());
-        System.out.println();
-
-        for(ContectType contectType : ContectType.values()) {
-            System.out.print(contectType.getTitle());
-            System.out.println(resume.getContectType(contectType));
-        }
-        System.out.println();
-
-        for (SectionType sectionType : SectionType.values()) {
-            System.out.println(sectionType.getTitle());
-            System.out.println();
-            System.out.println(resume.getSectionType(sectionType));
-            System.out.println();
-        }
+        return resume;
     }
 }

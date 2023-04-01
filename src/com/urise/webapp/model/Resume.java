@@ -12,7 +12,7 @@ public class Resume {
     // Unique identifier
     private final String uuid;
     private final String fullName;
-    private final Map<ContectType, String> contectType = new EnumMap<>(ContectType.class);
+    private final Map<ContactType, String> contactType = new EnumMap<>(ContactType.class);
     private final Map<SectionType, AbstractSection> sectionType = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
@@ -33,13 +33,13 @@ public class Resume {
         Resume resume = (Resume) o;
         return Objects.equals(uuid, resume.uuid) &&
                 Objects.equals(fullName, resume.fullName) &&
-                Objects.equals(contectType, resume.contectType) &&
+                Objects.equals(contactType, resume.contactType) &&
                 Objects.equals(sectionType, resume.sectionType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, fullName, contectType, sectionType);
+        return Objects.hash(uuid, fullName, contactType, sectionType);
     }
 
     @Override
@@ -51,24 +51,24 @@ public class Resume {
         return uuid;
     }
 
-    public void setContectType(ContectType type, String contect) {
-        contectType.put(type, contect);
+    public void setContactType(ContactType type, String contact) {
+        contactType.put(type, contact);
     }
 
     public void setSectionType(SectionType type, AbstractSection section) {
         sectionType.put(type, section);
     }
 
-    public String getContectType(ContectType type) {
-        return contectType.get(type);
+    public String getContactType(ContactType type) {
+        return contactType.get(type);
     }
 
     public AbstractSection getSectionType(SectionType type) {
         return sectionType.get(type);
     }
 
-    public Map<ContectType, String> getContectsType() {
-        return contectType;
+    public Map<ContactType, String> getContactsType() {
+        return contactType;
     }
 
     public Map<SectionType, AbstractSection> getSectionsType() {

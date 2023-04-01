@@ -1,35 +1,24 @@
 package com.urise.webapp.model;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Organization {
-    private String nameOrganization;
-    private String website;
-    private List<Period> periods = new ArrayList<>();
+    private final Link homePage;
+    private final List<Period> periods;
 
-    public Organization() {
-
+    public Organization(String name, String url, Period period) {
+        this(new Link(name, url), List.of(period));
     }
 
-    public Organization(String nameOrganization, String website, Period period) {
-        this(nameOrganization, website, List.of(period));
-    }
-
-    public Organization(String nameOrganization, String website, List<Period> periods) {
+    public Organization(Link homePage, List<Period> periods) {
+        this.homePage = homePage;
         this.periods = periods;
-        this.website = website;
-        this.nameOrganization = nameOrganization;
     }
 
-    public String getNameOrganization() {
-        return nameOrganization;
-    }
-
-    public String getWebsite() {
-        return website;
+    public Link getHomePage() {
+        return homePage;
     }
 
     public List<Period> getPeriods() {
@@ -41,16 +30,16 @@ public class Organization {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Organization that = (Organization) o;
-        return Objects.equals(nameOrganization, that.nameOrganization) && Objects.equals(website, that.website) && Objects.equals(periods, that.periods);
+        return homePage.equals(that.homePage) && Objects.equals(periods, that.periods);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nameOrganization, website, periods);
+        return Objects.hash(homePage, periods);
     }
 
     @Override
     public String toString() {
-        return "Organization(" + nameOrganization + ","  + website + "," + periods + ')';
+        return "Organization(" + homePage + "," + periods + ')';
     }
 }
