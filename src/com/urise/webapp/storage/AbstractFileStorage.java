@@ -32,7 +32,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     protected List<Resume> doCopyAll() {
         File[] files = directory.listFiles();
         if (files == null) {
-            throw new StorageException("error");
+            throw new StorageException("I/O Error");
         }
 
         List<Resume> resumeList = new ArrayList<>();
@@ -53,8 +53,8 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     protected Resume doGet(File file) {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-            return (Resume) ois.readObject();
+        try {
+            return doRead(file);
         } catch (Exception e) {
             throw new StorageException("get error", file.getName(), e);
         }
@@ -69,8 +69,6 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
             throw new StorageException("IO error", file.getName(), e);
         }
     }
-
-    protected abstract void doWrite(Resume resume, File file) throws IOException;
 
     @Override
     protected void doDelete(File file) {
@@ -91,7 +89,11 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     public void clear() {
-        for (File file : Objects.requireNonNull(directory.listFiles())) {
+        File[] files = directory.listFiles();
+        if (files == null) {
+            throw new StorageException("I/O Error");
+        }
+        for (File file : files) {
             doDelete(file);
         }
     }
@@ -100,8 +102,11 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     public int size() {
         String[] list = directory.list();
         if (list == null) {
-            throw new StorageException("read error");
+            throw new StorageException("I/O Error");
         }
         return list.length;
     }
+
+    protected abstract void doWrite(Resume resume, File file) throws IOException;
+    protected abstract Resume doRead(File file) throws IOException;
 }
