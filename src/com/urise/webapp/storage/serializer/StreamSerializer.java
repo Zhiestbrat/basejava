@@ -1,4 +1,4 @@
-package com.urise.webapp.storage;
+package com.urise.webapp.storage.serializer;
 
 import com.urise.webapp.model.Resume;
 
@@ -9,7 +9,7 @@ import java.io.OutputStream;
 /**
  * @author p.kondakov
  */
-public interface ObjectStream {
+public interface StreamSerializer {
 
     void doWrite(Resume resume, OutputStream os) throws IOException;
 
