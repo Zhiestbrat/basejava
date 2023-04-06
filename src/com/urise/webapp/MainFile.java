@@ -1,7 +1,5 @@
 package com.urise.webapp;
 
-import com.urise.webapp.exception.StorageException;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -31,23 +29,19 @@ public class MainFile {
             throw new RuntimeException(e);
         }
 
-        walk("C:\\Users\\Pavel\\IdeaProjects\\basejava");
+        walk(dir);
     }
 
-    public static void walk(String directory) {
-        File root = new File(directory);
-        File[] files = root.listFiles();
-
-        if(files == null) {
-            throw new StorageException("files error", directory);
-        }
-
-        for (File file : files) {
-            if(file.isDirectory()) {
-                walk(file.getAbsolutePath());
-                System.out.println("Dir: " + file.getAbsolutePath());
-            } else {
-                System.out.println("File: " + file.getAbsolutePath());
+    public static void walk(File dir) {
+        File[] files = dir.listFiles();
+        if(files != null) {
+            for (File file : files) {
+                if(file.isFile()) {
+                    System.out.println("---File: " + file.getName());
+                } else if (file.isDirectory()) {
+                    System.out.println("Directory: " + file.getName());
+                    walk(file);
+                }
             }
         }
     }
