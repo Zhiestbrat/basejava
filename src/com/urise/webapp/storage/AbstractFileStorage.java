@@ -3,10 +3,7 @@ package com.urise.webapp.storage;
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -14,11 +11,13 @@ import java.util.Objects;
 /**
  * @author p.kondakov
  */
-public abstract class AbstractFileStorage extends AbstractStorage<File> {
+public class AbstractFileStorage extends AbstractStorage<File> {
     private final File directory;
+    private final ObjectStream objectStream;
 
-    protected AbstractFileStorage(File directory) {
+    protected AbstractFileStorage(File directory, ObjectStream objectStream) {
         Objects.requireNonNull(directory, "directory must not be null");
+        Objects.requireNonNull(objectStream, "object must not be null");
         if (!directory.isDirectory()) {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not directory");
         }
@@ -26,16 +25,17 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not readable/writable");
         }
         this.directory = directory;
+        this.objectStream = objectStream;
     }
 
     @Override
     protected List<Resume> doCopyAll() {
         File[] files = directory.listFiles();
         if (files == null) {
-            throw new StorageException("I/O Error");
+            throw new StorageException("Directory read error", null);
         }
 
-        List<Resume> resumeList = new ArrayList<>();
+        List<Resume> resumeList = new ArrayList<>(files.length);
         for (File file : files) {
             resumeList.add(doGet(file));
         }
@@ -45,18 +45,18 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected void doUpdate(Resume resume, File file) {
         try {
-            doWrite(resume, file);
+            objectStream.doWrite(resume, new BufferedOutputStream(new FileOutputStream(file)));
         } catch (IOException e) {
-            throw new StorageException("write error", file.getName(), e);
+            throw new StorageException("File write error", file.getName(), e);
         }
     }
 
     @Override
     protected Resume doGet(File file) {
         try {
-            return doRead(file);
+            return objectStream.doRead(new BufferedInputStream(new FileInputStream(file)));
         } catch (Exception e) {
-            throw new StorageException("get error", file.getName(), e);
+            throw new StorageException("File read error", file.getName(), e);
         }
     }
 
@@ -64,16 +64,16 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     protected void doSave(Resume resume, File file) {
         try {
             file.createNewFile();
-            doWrite(resume, file);
         } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
+            throw new StorageException("Couldn't creat file " + file.getAbsolutePath(), file.getName(), e);
         }
+        doUpdate(resume, file);
     }
 
     @Override
     protected void doDelete(File file) {
         if (!file.delete()) {
-            throw new StorageException("delete error", file.getName());
+            throw new StorageException("File delete error", file.getName());
         }
     }
 
@@ -90,11 +90,10 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     public void clear() {
         File[] files = directory.listFiles();
-        if (files == null) {
-            throw new StorageException("I/O Error");
-        }
-        for (File file : files) {
-            doDelete(file);
+        if (files != null) {
+            for (File file : files) {
+                doDelete(file);
+            }
         }
     }
 
@@ -102,11 +101,8 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     public int size() {
         String[] list = directory.list();
         if (list == null) {
-            throw new StorageException("I/O Error");
+            throw new StorageException("Directory read error", null);
         }
         return list.length;
     }
-
-    protected abstract void doWrite(Resume resume, File file) throws IOException;
-    protected abstract Resume doRead(File file) throws IOException;
 }

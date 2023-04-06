@@ -1,8 +1,11 @@
 package com.urise.webapp.model;
 
+import java.io.Serial;
 import java.util.Objects;
 
 public class TextSection extends AbstractSection {
+    @Serial
+    private static final long serialVersionUID = 1L;
     private final String contact;
 
     public TextSection(String contact) {
@@ -19,7 +22,7 @@ public class TextSection extends AbstractSection {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TextSection that = (TextSection) o;
-        return Objects.equals(contact, that.contact);
+        return contact.equals(that.contact);
     }
 
     @Override

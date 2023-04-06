@@ -37,13 +37,13 @@ public class ResumeTestData {
                 "XML/XSD/XSLT, SQL, C/C++, Unix shell scripts",
                 "Java Frameworks: Java 8 (Time API, Streams), Guava, Java Executor, MyBatis, Spring (MVC, Security, Data, Clouds, Boot), JPA (Hibernate, EclipseLink), Guice, GWT(SmartGWT, ExtGWT/GXT), Vaadin, Jasperreports, Apache Commons, Eclipse SWT, JUnit, Selenium (htmlelements)."
         )));
-        resume.setSectionType(SectionType.EXPERIENCE, new OrganizationSection(List.of(new Organization("Java Online Projects", "http://javaops.ru/", new Period(2013, Month.of(10), "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок.")),
-                new Organization("Wrike", "Wrike", new Period(2014, Month.of(10), 2016, Month.of(1), "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."))
+        resume.setSectionType(SectionType.EXPERIENCE, new OrganizationSection(List.of(new Organization("Java Online Projects", "http://javaops.ru/", new Organization.Period(2013, Month.of(10), "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок.")),
+                new Organization("Wrike", "Wrike", new Organization.Period(2014, Month.of(10), 2016, Month.of(1), "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."))
         )));
-        resume.setSectionType(SectionType.EDUCATION, new OrganizationSection(List.of(new Organization("Coursera", "https://www.coursera.org/course/progfun", new Period(2013, Month.of(3), 2013, Month.of(5), "'Functional Programming Principles in Scala' by Martin Odersky", " ")),
-                new Organization("Luxoft", "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366", new Period(2011, Month.of(3), 2011, Month.of(4), "Курс 'Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.'", " ")),
-                new Organization("Siemens AG", "http://www.siemens.ru/", new Period(2005, Month.of(1), 2005, Month.of(4), "3 месяца обучения мобильным IN сетям (Берлин)", " ")),
-                new Organization(new Link("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "http://www.ifmo.ru/"), List.of(new Period(1993, Month.of(9), 1996, Month.of(7), "Аспирантура (программист С, С++)", " "), new Period(1987, Month.of(9), 1993, Month.of(7), "Инженер (программист Fortran, C)", "")))
+        resume.setSectionType(SectionType.EDUCATION, new OrganizationSection(List.of(new Organization("Coursera", "https://www.coursera.org/course/progfun", new Organization.Period(2013, Month.of(3), 2013, Month.of(5), "'Functional Programming Principles in Scala' by Martin Odersky", " ")),
+                new Organization("Luxoft", "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366", new Organization.Period(2011, Month.of(3), 2011, Month.of(4), "Курс 'Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.'", " ")),
+                new Organization("Siemens AG", "http://www.siemens.ru/", new Organization.Period(2005, Month.of(1), 2005, Month.of(4), "3 месяца обучения мобильным IN сетям (Берлин)", " ")),
+                new Organization(new Link("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "http://www.ifmo.ru/"), List.of(new Organization.Period(1993, Month.of(9), 1996, Month.of(7), "Аспирантура (программист С, С++)", " "), new Organization.Period(1987, Month.of(9), 1993, Month.of(7), "Инженер (программист Fortran, C)", "")))
         )));
         return resume;
     }
