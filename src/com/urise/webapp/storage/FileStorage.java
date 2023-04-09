@@ -18,7 +18,9 @@ public class FileStorage extends AbstractStorage<File> {
 
     protected FileStorage(File directory, StreamSerializer streamSerializer) {
         Objects.requireNonNull(directory, "directory must not be null");
-        Objects.requireNonNull(streamSerializer, "object must not be null");
+        Objects.requireNonNull(streamSerializer, "streamSerializer must not be null");
+
+        this.streamSerializer = streamSerializer;
         if (!directory.isDirectory()) {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not directory");
         }
@@ -26,12 +28,11 @@ public class FileStorage extends AbstractStorage<File> {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not readable/writable");
         }
         this.directory = directory;
-        this.streamSerializer = streamSerializer;
     }
 
     @Override
     protected List<Resume> doCopyAll() {
-        List<Resume> resumeList = new ArrayList<>(getFilesArray().length);
+        List<Resume> resumeList = new ArrayList<>();
         for (File file : getFilesArray()) {
             resumeList.add(doGet(file));
         }
@@ -43,7 +44,7 @@ public class FileStorage extends AbstractStorage<File> {
         try {
             streamSerializer.doWrite(resume, new BufferedOutputStream(new FileOutputStream(file)));
         } catch (IOException e) {
-            throw new StorageException("File write error", file.getName(), e);
+            throw new StorageException("File write error",  resume.getUuid(), e);
         }
     }
 
@@ -98,7 +99,7 @@ public class FileStorage extends AbstractStorage<File> {
     private File[] getFilesArray() {
         File[] files = directory.listFiles();
         if (files == null) {
-            throw new StorageException("Directory read error", null);
+            throw new StorageException("Directory read error");
         }
         return files;
     }

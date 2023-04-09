@@ -69,6 +69,7 @@ public class Resume implements Serializable {
     public AbstractSection getSectionType(SectionType type) {
         return sectionType.get(type);
     }
+
     public String getFullName() {
         return fullName;
     }
