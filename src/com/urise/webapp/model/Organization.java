@@ -1,6 +1,8 @@
 package com.urise.webapp.model;
 
 
+import com.google.gson.annotations.JsonAdapter;
+import com.urise.webapp.util.JsonSectionAdapter;
 import com.urise.webapp.util.LocalDateAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -15,6 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.urise.webapp.util.DateUtil.*;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable {
     @Serial
@@ -59,6 +62,7 @@ public class Organization implements Serializable {
     public String toString() {
         return "Organization(" + homePage + "," + periods + ')';
     }
+
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class Period implements Serializable {
         @Serial
