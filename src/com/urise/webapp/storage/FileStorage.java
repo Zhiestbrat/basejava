@@ -44,7 +44,7 @@ public class FileStorage extends AbstractStorage<File> {
         try {
             streamSerializer.doWrite(resume, new BufferedOutputStream(new FileOutputStream(file)));
         } catch (IOException e) {
-            throw new StorageException("File write error",  resume.getUuid(), e);
+            throw new StorageException("File write error", resume.getUuid(), e);
         }
     }
 
