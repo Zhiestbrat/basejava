@@ -2,8 +2,8 @@ package com.urise.webapp.model;
 
 
 import com.google.gson.annotations.JsonAdapter;
-import com.urise.webapp.util.JsonSectionAdapter;
-import com.urise.webapp.util.LocalDateAdapter;
+import com.urise.webapp.util.JsonLocalDateAdapter;
+import com.urise.webapp.util.XmlLocalDateAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -67,9 +67,11 @@ public class Organization implements Serializable {
     public static class Period implements Serializable {
         @Serial
         private static final long serialVersionUID = 1L;
-        @XmlJavaTypeAdapter(LocalDateAdapter.class)
+        @JsonAdapter(JsonLocalDateAdapter.class)
+        @XmlJavaTypeAdapter(XmlLocalDateAdapter.class)
         private LocalDate startDate;
-        @XmlJavaTypeAdapter(LocalDateAdapter.class)
+        @JsonAdapter(JsonLocalDateAdapter.class)
+        @XmlJavaTypeAdapter(XmlLocalDateAdapter.class)
         private LocalDate endDate;
         private String title;
         private String description;

@@ -6,7 +6,7 @@ import java.time.LocalDate;
 /**
  * @author p.kondakov
  */
-public class LocalDateAdapter extends XmlAdapter<String, LocalDate> {
+public class XmlLocalDateAdapter extends XmlAdapter<String, LocalDate> {
     @Override
     public LocalDate unmarshal(String str) throws Exception {
         return LocalDate.parse(str);
