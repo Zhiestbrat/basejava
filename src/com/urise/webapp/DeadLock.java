@@ -27,7 +27,7 @@ public class DeadLock {
     }
 
     static class Account {
-        private static int balance = 10000;
+        private  int balance = 10000;
 
         public void deposit(int amount) {
             balance += amount;
