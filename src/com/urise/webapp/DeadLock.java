@@ -5,40 +5,33 @@ package com.urise.webapp;
  */
 public class DeadLock {
     public static void main(String[] args) {
-         Account account1 = new Account();
-         Account account2 = new Account();
+        Object lock1 = new Object();
+        Object lock2 = new Object();
 
-       Thread thread1 =  new Thread(()-> {
-           synchronized (account1) {
-               synchronized (account2) {
-                   Account.transfer(account1, account2, 1000);
-               }
-           }
-       });
-       Thread thread2 =  new Thread(()-> {
-           synchronized (account2) {
-               synchronized (account1) {
-                   Account.transfer(account2, account1, 1000);
-               }
-           }
-       });
-       thread1.start();
-       thread2.start();
-    }
+        Thread thread1 = new Thread(() -> {
+            System.out.println(Thread.currentThread().getName() + " start");
+            synchronized (lock1) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                synchronized (lock2) {
 
-    static class Account {
-        private  int balance = 10000;
+                }
+            }
+            System.out.println(Thread.currentThread().getName() + " end");
+        });
+        Thread thread2 = new Thread(() -> {
+            System.out.println(Thread.currentThread().getName() + " start");
+            synchronized (lock2) {
+                synchronized (lock1) {
 
-        public void deposit(int amount) {
-            balance += amount;
-        }
-
-        public  void withdraw(int amount) {
-            balance -= amount;
-        }
-        public static void transfer(Account account1, Account account2, int amount) {
-            account1.withdraw(amount);
-            account2.deposit(amount);
-        }
+                }
+            }
+            System.out.println(Thread.currentThread().getName() + " end");
+        });
+        thread1.start();
+        thread2.start();
     }
 }
