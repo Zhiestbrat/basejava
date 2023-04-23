@@ -10,28 +10,28 @@ public class DeadLock {
 
         Thread thread1 = new Thread(() -> {
             System.out.println(Thread.currentThread().getName() + " start");
-            synchronized (lock1) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                synchronized (lock2) {
-
-                }
-            }
+            synchronize(lock1, lock2);
             System.out.println(Thread.currentThread().getName() + " end");
         });
         Thread thread2 = new Thread(() -> {
             System.out.println(Thread.currentThread().getName() + " start");
-            synchronized (lock2) {
-                synchronized (lock1) {
-
-                }
-            }
+            synchronize(lock2, lock1);
             System.out.println(Thread.currentThread().getName() + " end");
         });
         thread1.start();
         thread2.start();
+    }
+
+    public static void synchronize(Object lock1, Object lock2){
+        synchronized (lock1) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            synchronized (lock2) {
+
+            }
+        }
     }
 }
