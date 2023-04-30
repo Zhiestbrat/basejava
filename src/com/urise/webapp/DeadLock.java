@@ -18,18 +18,19 @@ public class DeadLock {
             synchronize(lock2, lock1);
             System.out.println(Thread.currentThread().getName() + " end");
         });
+
         thread1.start();
         thread2.start();
     }
 
     public static void synchronize(Object lock1, Object lock2){
-        synchronized (lock1) {
+        synchronized (lock2) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            synchronized (lock2) {
+            synchronized (lock1) {
 
             }
         }
