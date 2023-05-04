@@ -16,12 +16,18 @@ public class HomeWork {
     }
 
     public static int minValue(int[] values) {
-        return Arrays.stream(values).sorted().distinct().reduce(0, (x, y) -> x * 10 + y);
+        return Arrays.stream(values)
+                .sorted()
+                .distinct()
+                .reduce(0, (x, y) -> x * 10 + y);
     }
 
     public static List<Integer> oddOrEven(List<Integer> integers) {
-        int sum = integers.stream().reduce(0, Integer::sum);
-        return integers.stream().filter(x -> (sum % 2 == 0) == (x % 2 == 0)).collect(Collectors.toList());
+        int sum = integers.stream()
+                .reduce(0, Integer::sum);
+        return integers.stream()
+                .filter(x -> (sum % 2 == 0) == (x % 2 == 0))
+                .collect(Collectors.toList());
        /* int sum = 0;
         for (int x : integers) {
             sum += x;
