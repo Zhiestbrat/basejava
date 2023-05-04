@@ -1,5 +1,6 @@
 package com.urise.webapp.storage;
 
+import com.urise.webapp.Config;
 import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.Resume;
@@ -10,19 +11,25 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static com.urise.webapp.ResumeTestData.getResume;
 import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractStorageTest {
-    protected final static File STORAGE_DIR = new File("C:\\Users\\Pavel\\IdeaProjects\\basejava\\storage");
+    protected final static File STORAGE_DIR = Config.getInstance().getStorageDir();
 
     protected final Storage storage;
-    private static final Resume R1 = getResume("uuid1", "name1");
-    private static final Resume R2 = getResume("uuid2", "name2");
-    private static final Resume R3 = getResume("uuid3", "name3");
-    private static final Resume R4 = getResume("uuid4", "name4");
-    private static final Resume RESUME_NOT_EXIST = getResume("uuidNotExist", "nameNotExist");
+
+    private static final String UUID_1 = UUID.randomUUID().toString();
+    private static final String UUID_2 = UUID.randomUUID().toString();
+    private static final String UUID_3 = UUID.randomUUID().toString();
+    private static final String UUID_4 = UUID.randomUUID().toString();
+    private static final Resume R1 = getResume(UUID_1, "Name1");
+    private static final Resume R2 = getResume(UUID_2, "Name2");
+    private static final Resume R3 = getResume(UUID_3, "Name3");
+    private static final Resume R4 = getResume(UUID_4, "Name4");
+
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -50,7 +57,7 @@ public abstract class AbstractStorageTest {
 
     @Test(expected = NotExistStorageException.class)
     public void getNotExist() {
-        storage.get(RESUME_NOT_EXIST.getUuid());
+        storage.get(R4.getUuid());
     }
 
     @Test
@@ -67,14 +74,14 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() {
-        Resume expected = new Resume("uuid1", "newName");
+        Resume expected = new Resume(UUID_1, "newName");
         storage.update(expected);
         assertEquals(expected, storage.get(expected.getUuid()));
     }
 
     @Test(expected = NotExistStorageException.class)
     public void updateNotExist() {
-        storage.update(RESUME_NOT_EXIST);
+        storage.update(R4);
     }
 
     @Test(expected = NotExistStorageException.class)
@@ -86,7 +93,7 @@ public abstract class AbstractStorageTest {
 
     @Test(expected = NotExistStorageException.class)
     public void deleteNotExist() {
-        storage.delete(RESUME_NOT_EXIST.getUuid());
+        storage.delete(R4.getUuid());
     }
 
     @Test
