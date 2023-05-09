@@ -18,7 +18,6 @@ import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractStorageTest {
     protected final static File STORAGE_DIR = Config.getInstance().getStorageDir();
-
     protected final Storage storage;
 
     private static final String UUID_1 = UUID.randomUUID().toString();

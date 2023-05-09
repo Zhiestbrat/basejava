@@ -8,14 +8,15 @@ import java.util.UUID;
 
 public class ResumeTestData {
     public static Resume getResume(String uuid, String fullName) {
+        Resume resume = new Resume(uuid, fullName);
 
-        /*resume.setContactType(ContactType.TELEPHONE, "+7(921) 855-0482");
+        resume.setContactType(ContactType.TELEPHONE, "+7(921) 855-0482");
         resume.setContactType(ContactType.SKYPE, "skype:grigory.kislin");
         resume.setContactType(ContactType.MAIL, "gkislin@yandex.ru");
         resume.setContactType(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
         resume.setContactType(ContactType.GITHUB, "https://github.com/gkislin");
         resume.setContactType(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
-        resume.setContactType(ContactType.HOME_PAGE, "http://gkislin.ru/");*/
+        resume.setContactType(ContactType.HOME_PAGE, "http://gkislin.ru/");
 
         /*resume.setSectionType(SectionType.OBJECTIVE,
                 new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
@@ -44,6 +45,6 @@ public class ResumeTestData {
                 new Organization("Siemens AG", "http://www.siemens.ru/", new Organization.Period(2005, Month.of(1), 2005, Month.of(4), "3 месяца обучения мобильным IN сетям (Берлин)", " ")),
                 new Organization(new Link("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "http://www.ifmo.ru/"), List.of(new Organization.Period(1993, Month.of(9), 1996, Month.of(7), "Аспирантура (программист С, С++)", " "), new Organization.Period(1987, Month.of(9), 1993, Month.of(7), "Инженер (программист Fortran, C)", "")))
         )));*/
-        return new Resume(uuid, fullName);
+        return resume;
     }
 }
