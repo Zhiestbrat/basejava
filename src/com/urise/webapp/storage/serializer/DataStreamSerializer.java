@@ -74,10 +74,10 @@ public class DataStreamSerializer implements StreamSerializer {
         });
     }
 
-    private <T> void writeWithException(DataOutputStream dos, Collection<T> collection, Consumer<T> consumer) throws IOException {
+    private <T> void writeWithException(DataOutputStream dos, Collection<T> collection, Consumer<T> writer) throws IOException {
         dos.writeInt(collection.size());
         for (T item : collection) {
-            consumer.accept(item);
+            writer.accept(item);
         }
     }
 
@@ -90,10 +90,10 @@ public class DataStreamSerializer implements StreamSerializer {
         return LocalDate.of(dis.readInt(), dis.readInt(), 1);
     }
 
-    private void readWithException(DataInputStream dis, Empty empty) throws IOException {
+    private void readWithException(DataInputStream dis, Runnable runnable) throws IOException {
         int size = dis.readInt();
         for (int i = 0; i < size; i++) {
-            empty.read();
+            runnable.run();
         }
     }
 
@@ -108,7 +108,6 @@ public class DataStreamSerializer implements StreamSerializer {
                                     readLocalDate(dis), readLocalDate(dis), dis.readUTF(), dis.readUTF()
                             ))
                     )));
-
         };
     }
 
@@ -132,8 +131,8 @@ public class DataStreamSerializer implements StreamSerializer {
     }
 
     @FunctionalInterface
-    private interface Empty {
-        void read() throws IOException;
+    private interface Runnable {
+        void run() throws IOException;
     }
 }
 
