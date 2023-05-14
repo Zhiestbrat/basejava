@@ -18,7 +18,7 @@ public class ResumeTestData {
         resume.setContactType(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
         resume.setContactType(ContactType.HOME_PAGE, "http://gkislin.ru/");
 
-        /*resume.setSectionType(SectionType.OBJECTIVE,
+        resume.setSectionType(SectionType.OBJECTIVE,
                 new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
         resume.setSectionType(SectionType.PERSONAL,
                 new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
@@ -37,7 +37,7 @@ public class ResumeTestData {
                 "XML/XSD/XSLT, SQL, C/C++, Unix shell scripts",
                 "Java Frameworks: Java 8 (Time API, Streams), Guava, Java Executor, MyBatis, Spring (MVC, Security, Data, Clouds, Boot), JPA (Hibernate, EclipseLink), Guice, GWT(SmartGWT, ExtGWT/GXT), Vaadin, Jasperreports, Apache Commons, Eclipse SWT, JUnit, Selenium (htmlelements)."
         )));
-        resume.setSectionType(SectionType.EXPERIENCE, new OrganizationSection(List.of(new Organization("Java Online Projects", "http://javaops.ru/", new Organization.Period(2013, Month.of(10), "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок.")),
+        /*resume.setSectionType(SectionType.EXPERIENCE, new OrganizationSection(List.of(new Organization("Java Online Projects", "http://javaops.ru/", new Organization.Period(2013, Month.of(10), "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок.")),
                 new Organization("Wrike", "Wrike", new Organization.Period(2014, Month.of(10), 2016, Month.of(1), "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."))
         )));
         resume.setSectionType(SectionType.EDUCATION, new OrganizationSection(List.of(new Organization("Coursera", "https://www.coursera.org/course/progfun", new Organization.Period(2013, Month.of(3), 2013, Month.of(5), "'Functional Programming Principles in Scala' by Martin Odersky", " ")),
