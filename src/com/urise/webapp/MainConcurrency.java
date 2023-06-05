@@ -15,7 +15,7 @@ public class MainConcurrency {
     private final AtomicInteger atomicInteger = new AtomicInteger();
 //    private static final Object LOCK = new Object();
 
-    //    private static final Lock LOCK = new ReentrantLock();
+
     private static final ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
     private static final Lock WRITE_LOCK = reentrantReadWriteLock.writeLock();
     private static final Lock READ_LOCK = reentrantReadWriteLock.readLock();

@@ -61,6 +61,9 @@ public class Resume implements Serializable {
     public String getUuid() {
         return uuid;
     }
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 
     public void setContactType(ContactType type, String contact) {
         contactType.put(type, contact);

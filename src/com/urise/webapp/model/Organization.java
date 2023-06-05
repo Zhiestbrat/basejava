@@ -23,6 +23,8 @@ import static com.urise.webapp.util.DateUtil.of;
 public class Organization implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
+
+    public static final Organization EMPTY = new Organization("", "", Period.EMPTY);
     private Link homePage;
     private List<Period> periods = new ArrayList<>();
 
@@ -66,6 +68,7 @@ public class Organization implements Serializable {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class Period implements Serializable {
+        public static final Period EMPTY = new Period();
         @Serial
         private static final long serialVersionUID = 1L;
         @JsonAdapter(JsonLocalDateAdapter.class)
@@ -133,6 +136,14 @@ public class Organization implements Serializable {
         @Override
         public String toString() {
             return "Period(" + startDate + ',' + endDate + ',' + title + ',' + description + ')';
+        }
+
+        public LocalDate getStartDate() {
+            return startDate;
+        }
+
+        public LocalDate getEndDate() {
+            return endDate;
         }
     }
 }

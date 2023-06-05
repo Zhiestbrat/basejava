@@ -21,6 +21,11 @@ public class SqlStorage implements Storage {
     public final SqlHelper sqlHelper;
 
     public SqlStorage(String dbUrl, String dbUSer, String dbPassword) {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
         sqlHelper = new SqlHelper(() -> DriverManager.getConnection(dbUrl, dbUSer, dbPassword));
     }
 
@@ -42,7 +47,7 @@ public class SqlStorage implements Storage {
             deleteContact(connection, resume);
             deleteSection(connection, resume);
             insertContacts(connection, resume);
-            insertSection(connection, resume);
+            insertSections(connection, resume);
             return null;
         });
     }
@@ -56,7 +61,7 @@ public class SqlStorage implements Storage {
                 ps.execute();
             }
             insertContacts(connection, resume);
-            insertSection(connection, resume);
+            insertSections(connection, resume);
             return null;
         });
     }
@@ -141,14 +146,15 @@ public class SqlStorage implements Storage {
     }
 
     private void deleteContact(Connection conn, Resume resume) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("DELETE  FROM contact WHERE resume_uuid=?")) {
-            ps.setString(1, resume.getUuid());
-            ps.execute();
-        }
+        deleteAttributes(conn, resume, "DELETE  FROM contact WHERE resume_uuid=?");
     }
 
     private void deleteSection(Connection conn, Resume resume) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("DELETE  FROM section WHERE resume_uuid=?")) {
+        deleteAttributes(conn, resume, "DELETE  FROM section WHERE resume_uuid=?");
+    }
+
+    private void deleteAttributes(Connection conn, Resume resume, String sql) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, resume.getUuid());
             ps.execute();
         }
@@ -166,7 +172,7 @@ public class SqlStorage implements Storage {
         }
     }
 
-    private void insertSection(Connection conn, Resume resume) throws SQLException {
+    private void insertSections(Connection conn, Resume resume) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement("INSERT INTO section (resume_uuid, type, content) VALUES (?,?,?)")) {
             for (Map.Entry<SectionType, AbstractSection> e : resume.getSectionType().entrySet()) {
                 ps.setString(1, resume.getUuid());
