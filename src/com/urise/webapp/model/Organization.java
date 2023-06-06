@@ -1,6 +1,5 @@
 package com.urise.webapp.model;
 
-
 import com.google.gson.annotations.JsonAdapter;
 import com.urise.webapp.util.JsonLocalDateAdapter;
 import com.urise.webapp.util.XmlLocalDateAdapter;
@@ -13,39 +12,42 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 import static com.urise.webapp.util.DateUtil.NOW;
 import static com.urise.webapp.util.DateUtil.of;
 
+
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public static final Organization EMPTY = new Organization("", "", Period.EMPTY);
+    public static final Organization EMPTY = new Organization("", "", Position.EMPTY);
+
     private Link homePage;
-    private List<Period> periods = new ArrayList<>();
+    private List<Position> positions = new ArrayList<>();
 
     public Organization() {
     }
 
-    public Organization(String name, String url, Period... period) {
-        this(new Link(name, url), List.of(period));
+    public Organization(String name, String url, Position... positions) {
+        this(new Link(name, url), Arrays.asList(positions));
     }
 
-    public Organization(Link homePage, List<Period> periods) {
+    public Organization(Link homePage, List<Position> positions) {
         this.homePage = homePage;
-        this.periods = periods;
+        this.positions = positions;
     }
 
     public Link getHomePage() {
         return homePage;
     }
 
-    public List<Period> getPeriods() {
-        return periods;
+    public List<Position> getPositions() {
+        return positions;
     }
 
     @Override
@@ -53,24 +55,24 @@ public class Organization implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Organization that = (Organization) o;
-        return Objects.equals(homePage, that.homePage) && Objects.equals(periods, that.periods);
+        return Objects.equals(homePage, that.homePage) &&
+                Objects.equals(positions, that.positions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(homePage, periods);
+        return Objects.hash(homePage, positions);
     }
 
     @Override
     public String toString() {
-        return "Organization(" + homePage + "," + periods + ')';
+        return "Organization(" + homePage + "," + positions + ')';
     }
 
+
     @XmlAccessorType(XmlAccessType.FIELD)
-    public static class Period implements Serializable {
-        public static final Period EMPTY = new Period();
-        @Serial
-        private static final long serialVersionUID = 1L;
+    public static class Position implements Serializable {
+        public static final Position EMPTY = new Position();
         @JsonAdapter(JsonLocalDateAdapter.class)
         @XmlJavaTypeAdapter(XmlLocalDateAdapter.class)
         private LocalDate startDate;
@@ -80,20 +82,20 @@ public class Organization implements Serializable {
         private String title;
         private String description;
 
-        public Period() {
+        public Position() {
         }
 
-        public Period(int startYear, Month startMonth, String title, String description) {
+        public Position(int startYear, Month startMonth, String title, String description) {
             this(of(startYear, startMonth), NOW, title, description);
         }
 
-        public Period(int startYear, Month startMonth, int endYear, Month endMonth, String title, String description) {
+        public Position(int startYear, Month startMonth, int endYear, Month endMonth, String title, String description) {
             this(of(startYear, startMonth), of(endYear, endMonth), title, description);
         }
 
-        public Period(LocalDate startDate, LocalDate endDate, String title, String description) {
-            Objects.requireNonNull(startDate, "start must not be null");
-            Objects.requireNonNull(endDate, "end must not be null");
+        public Position(LocalDate startDate, LocalDate endDate, String title, String description) {
+            Objects.requireNonNull(startDate, "startDate must not be null");
+            Objects.requireNonNull(endDate, "endDate must not be null");
             Objects.requireNonNull(title, "title must not be null");
             this.startDate = startDate;
             this.endDate = endDate;
@@ -101,11 +103,11 @@ public class Organization implements Serializable {
             this.description = description == null ? "" : description;
         }
 
-        public LocalDate getStart() {
+        public LocalDate getStartDate() {
             return startDate;
         }
 
-        public LocalDate getEnd() {
+        public LocalDate getEndDate() {
             return endDate;
         }
 
@@ -121,11 +123,11 @@ public class Organization implements Serializable {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            Period period = (Period) o;
-            return Objects.equals(startDate, period.startDate) &&
-                    Objects.equals(endDate, period.endDate) &&
-                    Objects.equals(title, period.title) &&
-                    Objects.equals(description, period.description);
+            Position position = (Position) o;
+            return Objects.equals(startDate, position.startDate) &&
+                    Objects.equals(endDate, position.endDate) &&
+                    Objects.equals(title, position.title) &&
+                    Objects.equals(description, position.description);
         }
 
         @Override
@@ -135,15 +137,7 @@ public class Organization implements Serializable {
 
         @Override
         public String toString() {
-            return "Period(" + startDate + ',' + endDate + ',' + title + ',' + description + ')';
-        }
-
-        public LocalDate getStartDate() {
-            return startDate;
-        }
-
-        public LocalDate getEndDate() {
-            return endDate;
+            return "Position(" + startDate + ',' + endDate + ',' + title + ',' + description + ')';
         }
     }
 }

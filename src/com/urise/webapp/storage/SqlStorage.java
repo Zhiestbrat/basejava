@@ -1,9 +1,9 @@
 package com.urise.webapp.storage;
 
 import com.urise.webapp.exception.NotExistStorageException;
-import com.urise.webapp.model.AbstractSection;
 import com.urise.webapp.model.ContactType;
 import com.urise.webapp.model.Resume;
+import com.urise.webapp.model.Section;
 import com.urise.webapp.model.SectionType;
 import com.urise.webapp.sql.SqlHelper;
 import com.urise.webapp.util.JsonParser;
@@ -162,7 +162,7 @@ public class SqlStorage implements Storage {
 
     private void insertContacts(Connection conn, Resume resume) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement("INSERT INTO contact (resume_uuid, type, value) VALUES (?,?,?)")) {
-            for (Map.Entry<ContactType, String> e : resume.getContactType().entrySet()) {
+            for (Map.Entry<ContactType, String> e : resume.getContacts().entrySet()) {
                 ps.setString(1, resume.getUuid());
                 ps.setString(2, e.getKey().name());
                 ps.setString(3, e.getValue());
@@ -174,11 +174,11 @@ public class SqlStorage implements Storage {
 
     private void insertSections(Connection conn, Resume resume) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement("INSERT INTO section (resume_uuid, type, content) VALUES (?,?,?)")) {
-            for (Map.Entry<SectionType, AbstractSection> e : resume.getSectionType().entrySet()) {
+            for (Map.Entry<SectionType, Section> e : resume.getSections().entrySet()) {
                 ps.setString(1, resume.getUuid());
                 ps.setString(2, e.getKey().name());
-                AbstractSection abstractSection = e.getValue();
-                ps.setString(3, JsonParser.write(abstractSection, AbstractSection.class));
+                Section abstractSection = e.getValue();
+                ps.setString(3, JsonParser.write(abstractSection, Section.class));
                 ps.addBatch();
             }
             ps.executeBatch();
@@ -188,7 +188,7 @@ public class SqlStorage implements Storage {
     private void addContact(ResultSet rs, Resume resume) throws SQLException {
         String value = rs.getString("value");
         if (value != null) {
-            resume.setContactType(ContactType.valueOf(rs.getString("type")), value);
+            resume.setContact(ContactType.valueOf(rs.getString("type")), value);
         }
     }
 
@@ -196,7 +196,7 @@ public class SqlStorage implements Storage {
         String content = rs.getString("content");
         if (content != null) {
             SectionType type = SectionType.valueOf(rs.getString("type"));
-            resume.setSectionType(type, JsonParser.read(content, AbstractSection.class));
+            resume.setSection(type, JsonParser.read(content, Section.class));
         }
     }
 }

@@ -3,39 +3,46 @@ package com.urise.webapp.model;
 import java.io.Serial;
 import java.util.Objects;
 
-public class TextSection extends AbstractSection {
+public class TextSection extends Section {
+
     @Serial
     private static final long serialVersionUID = 1L;
+
     public static final TextSection EMPTY = new TextSection("");
-    private String contact;
+
+    private String content;
 
     public TextSection() {
     }
 
-    public TextSection(String contact) {
-        Objects.requireNonNull(contact, "contact must not be null");
-        this.contact = contact;
+    public TextSection(String content) {
+        Objects.requireNonNull(content, "content must not be null");
+        this.content = content;
     }
 
-    public String getContact() {
-        return contact;
+    public String getContent() {
+        return content;
+    }
+
+    @Override
+    public String toString() {
+        return content;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         TextSection that = (TextSection) o;
-        return contact.equals(that.contact);
+
+        return content.equals(that.content);
+
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(contact);
-    }
-
-    @Override
-    public String toString() {
-        return contact;
+        return content.hashCode();
     }
 }
+

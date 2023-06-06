@@ -1,38 +1,39 @@
 package com.urise.webapp.model;
 
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.*;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
-
-/**
- * Initial resume class
- */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Resume implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     public static final Resume EMPTY = new Resume();
 
     static {
-        EMPTY.setSectionType(SectionType.OBJECTIVE, TextSection.EMPTY);
-        EMPTY.setSectionType(SectionType.PERSONAL, TextSection.EMPTY);
-        EMPTY.setSectionType(SectionType.ACHIEVEMENT, ListSection.EMPTY);
-        EMPTY.setSectionType(SectionType.QUALIFICATIONS, ListSection.EMPTY);
-        EMPTY.setSectionType(SectionType.EXPERIENCE, new OrganizationSection(Organization.EMPTY));
-        EMPTY.setSectionType(SectionType.EDUCATION, new OrganizationSection(Organization.EMPTY));
+        EMPTY.setSection(SectionType.OBJECTIVE, TextSection.EMPTY);
+        EMPTY.setSection(SectionType.PERSONAL, TextSection.EMPTY);
+        EMPTY.setSection(SectionType.ACHIEVEMENT, ListSection.EMPTY);
+        EMPTY.setSection(SectionType.QUALIFICATIONS, ListSection.EMPTY);
+        EMPTY.setSection(SectionType.EXPERIENCE, new OrganizationSection(Organization.EMPTY));
+        EMPTY.setSection(SectionType.EDUCATION, new OrganizationSection(Organization.EMPTY));
     }
-    @Serial
-    private static final long serialVersionUID = 1L;
+
     // Unique identifier
     private String uuid;
+
     private String fullName;
-    private final Map<ContactType, String> contactType = new EnumMap<>(ContactType.class);
-    private final Map<SectionType, AbstractSection> sectionType = new EnumMap<>(SectionType.class);
+
+    private final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
+    private final Map<SectionType, Section> sections = new EnumMap<>(SectionType.class);
 
     public Resume() {
     }
@@ -42,10 +43,46 @@ public class Resume implements Serializable {
     }
 
     public Resume(String uuid, String fullName) {
-        Objects.requireNonNull(fullName, "fullName must not be null");
         Objects.requireNonNull(uuid, "uuid must not be null");
+        Objects.requireNonNull(fullName, "fullName must not be null");
         this.uuid = uuid;
         this.fullName = fullName;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public Map<ContactType, String> getContacts() {
+        return contacts;
+    }
+
+    public Map<SectionType, Section> getSections() {
+        return sections;
+    }
+
+    public String getContact(ContactType type) {
+        return contacts.get(type);
+    }
+
+    public Section getSection(SectionType type) {
+        return sections.get(type);
+    }
+
+    public void setContact(ContactType type, String value) {
+        contacts.put(type, value);
+    }
+
+    public void setSection(SectionType type, Section section) {
+        sections.put(type, section);
     }
 
     @Override
@@ -55,52 +92,17 @@ public class Resume implements Serializable {
         Resume resume = (Resume) o;
         return Objects.equals(uuid, resume.uuid) &&
                 Objects.equals(fullName, resume.fullName) &&
-                Objects.equals(contactType, resume.contactType) &&
-                Objects.equals(sectionType, resume.sectionType);
+                Objects.equals(contacts, resume.contacts) &&
+                Objects.equals(sections, resume.sections);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, fullName, contactType, sectionType);
+        return Objects.hash(uuid, fullName, contacts, sections);
     }
 
     @Override
     public String toString() {
         return uuid + '(' + fullName + ')';
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public void setContactType(ContactType type, String contact) {
-        contactType.put(type, contact);
-    }
-
-    public void setSectionType(SectionType type, AbstractSection section) {
-        sectionType.put(type, section);
-    }
-
-    public String getContactType(ContactType type) {
-        return contactType.get(type);
-    }
-
-    public AbstractSection getSectionType(SectionType type) {
-        return sectionType.get(type);
-    }
-
-    public Map<ContactType, String> getContactType() {
-        return contactType;
-    }
-
-    public Map<SectionType, AbstractSection> getSectionType() {
-        return sectionType;
-    }
-
-    public String getFullName() {
-        return fullName;
     }
 }

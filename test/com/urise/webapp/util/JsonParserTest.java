@@ -1,8 +1,8 @@
 package com.urise.webapp.util;
 
-import com.urise.webapp.model.AbstractSection;
+
 import com.urise.webapp.model.Resume;
-import com.urise.webapp.model.SectionType;
+import com.urise.webapp.model.Section;
 import com.urise.webapp.model.TextSection;
 import org.junit.Test;
 
@@ -24,10 +24,10 @@ public class JsonParserTest {
 
     @Test
     public void write() {
-        AbstractSection section = new TextSection("Objective1");
-        String json = JsonParser.write(section, AbstractSection.class);
+        Section section = new TextSection("Objective1");
+        String json = JsonParser.write(section, Section.class);
         System.out.println(json);
-        AbstractSection section1 = JsonParser.read(json, AbstractSection.class);
+        Section section1 = JsonParser.read(json, Section.class);
         assertEquals(section1, section);
     }
 }

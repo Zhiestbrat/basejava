@@ -10,7 +10,7 @@ public class HtmlUtil {
         return str == null || str.trim().length() == 0;
     }
 
-    public static String formatDates(Organization.Period period) {
+    public static String formatDates(Organization.Position period) {
         return DateUtil.format(period.getStartDate()) + " - " + DateUtil.format(period.getEndDate());
     }
 

@@ -44,27 +44,27 @@ public class ResumeServlet extends HttpServlet {
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
             if (HtmlUtil.isEmpty(value)) {
-                r.getContactType().remove(type);
+                r.getContacts().remove(type);
             } else {
-                r.setContactType(type, value);
+                r.setContact(type, value);
             }
         }
         for (SectionType type : SectionType.values()) {
             String value = request.getParameter(type.name());
             String[] values = request.getParameterValues(type.name());
             if (HtmlUtil.isEmpty(value) && values.length < 2) {
-                r.getSectionType().remove(type);
+                r.getSections().remove(type);
             } else {
                 switch (type) {
-                    case OBJECTIVE, PERSONAL -> r.setSectionType(type, new TextSection(value));
-                    case ACHIEVEMENT, QUALIFICATIONS -> r.setSectionType(type, new ListSection(value.split("\\n")));
+                    case OBJECTIVE, PERSONAL -> r.setSection(type, new TextSection(value));
+                    case ACHIEVEMENT, QUALIFICATIONS -> r.setSection(type, new ListSection(value.split("\\n")));
                     case EDUCATION, EXPERIENCE -> {
-                        List<Organization> orgs = new ArrayList<>();
+                        List<Organization> org = new ArrayList<>();
                         String[] urls = request.getParameterValues(type.name() + "url");
                         for (int i = 0; i < values.length; i++) {
                             String name = values[i];
                             if (!HtmlUtil.isEmpty(name)) {
-                                List<Organization.Period> positions = new ArrayList<>();
+                                List<Organization.Position> positions = new ArrayList<>();
                                 String pfx = type.name() + i;
                                 String[] startDates = request.getParameterValues(pfx + "startDate");
                                 String[] endDates = request.getParameterValues(pfx + "endDate");
@@ -72,13 +72,13 @@ public class ResumeServlet extends HttpServlet {
                                 String[] descriptions = request.getParameterValues(pfx + "description");
                                 for (int j = 0; j < titles.length; j++) {
                                     if (!HtmlUtil.isEmpty(titles[j])) {
-                                        positions.add(new Organization.Period(DateUtil.parse(startDates[j]), DateUtil.parse(endDates[j]), titles[j], descriptions[j]));
+                                        positions.add(new Organization.Position(DateUtil.parse(startDates[j]), DateUtil.parse(endDates[j]), titles[j], descriptions[j]));
                                     }
                                 }
-                                orgs.add(new Organization(new Link(name, urls[i]), positions));
+                                org.add(new Organization(new Link(name, urls[i]), positions));
                             }
                         }
-                        r.setSectionType(type, new OrganizationSection(orgs));
+                        r.setSection(type, new OrganizationSection(org));
                     }
                 }
             }
@@ -93,7 +93,6 @@ public class ResumeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         String uuid = request.getParameter("uuid");
         String action = request.getParameter("action");
-
 
         if (action == null) {
             request.setAttribute("resumes", storage.getAllSorted());
@@ -113,7 +112,7 @@ public class ResumeServlet extends HttpServlet {
             case "edit" -> {
                 r = storage.get(uuid);
                 for (SectionType type : SectionType.values()) {
-                    AbstractSection section = r.getSectionType(type);
+                    Section section = r.getSection(type);
                     switch (type) {
                         case OBJECTIVE, PERSONAL -> {
                             if (section == null) {
@@ -131,16 +130,16 @@ public class ResumeServlet extends HttpServlet {
                             emptyFirstOrganizations.add(Organization.EMPTY);
                             if (orgSection != null) {
                                 for (Organization org : orgSection.getOrganizations()) {
-                                    List<Organization.Period> emptyFirstPositions = new ArrayList<>();
-                                    emptyFirstPositions.add(Organization.Period.EMPTY);
-                                    emptyFirstPositions.addAll(org.getPeriods());
+                                    List<Organization.Position> emptyFirstPositions = new ArrayList<>();
+                                    emptyFirstPositions.add(Organization.Position.EMPTY);
+                                    emptyFirstPositions.addAll(org.getPositions());
                                     emptyFirstOrganizations.add(new Organization(org.getHomePage(), emptyFirstPositions));
                                 }
                             }
                             section = new OrganizationSection(emptyFirstOrganizations);
                         }
                     }
-                    r.setSectionType(type, section);
+                    r.setSection(type, section);
                 }
             }
             default -> throw new IllegalArgumentException("Action " + action + " is illegal");
