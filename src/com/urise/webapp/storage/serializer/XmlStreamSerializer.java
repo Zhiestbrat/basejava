@@ -20,7 +20,7 @@ public class XmlStreamSerializer implements StreamSerializer {
                 OrganizationSection.class,
                 TextSection.class,
                 ListSection.class,
-                Organization.Period.class);
+                Organization.Position.class);
     }
 
     @Override

@@ -9,75 +9,40 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author p.kondakov
- */
 public class DataStreamSerializer implements StreamSerializer {
+
     @Override
-    public void doWrite(Resume resume, OutputStream os) throws IOException {
+    public void doWrite(Resume r, OutputStream os) throws IOException {
         try (DataOutputStream dos = new DataOutputStream(os)) {
-            dos.writeUTF(resume.getUuid());
-            dos.writeUTF(resume.getFullName());
-            Map<ContactType, String> contacts = resume.getContactType();
-            Map<SectionType, AbstractSection> sections = resume.getSectionType();
-            writeContactType(dos, contacts);
-            writeSectionType(dos, sections);
-        }
-    }
-
-    @Override
-    public Resume doRead(InputStream is) throws IOException {
-        try (DataInputStream dis = new DataInputStream(is)) {
-            String uuid = dis.readUTF();
-            String fullName = dis.readUTF();
-            Resume resume = new Resume(uuid, fullName);
-            readWithException(dis, () -> {
-                ContactType contactType = ContactType.valueOf(dis.readUTF());
-                resume.setContactType(contactType, dis.readUTF());
+            dos.writeUTF(r.getUuid());
+            dos.writeUTF(r.getFullName());
+            Map<ContactType, String> contacts = r.getContacts();
+            writeCollection(dos, contacts.entrySet(), entry -> {
+                dos.writeUTF(entry.getKey().name());
+                dos.writeUTF(entry.getValue());
             });
-            readWithException(dis, () -> {
-                SectionType sectionType = SectionType.valueOf(dis.readUTF());
-                resume.setSectionType(sectionType, readSection(dis, sectionType));
-            });
-            return resume;
-        }
-    }
 
-    private void writeContactType(DataOutputStream dos, Map<ContactType, String> contact) throws IOException {
-        writeWithException(dos, contact.entrySet(), entry -> {
-            dos.writeUTF(entry.getKey().name());
-            dos.writeUTF(entry.getValue());
-        });
-    }
-
-    private void writeSectionType(DataOutputStream dos, Map<SectionType, AbstractSection> section) throws IOException {
-        writeWithException(dos, section.entrySet(), entry -> {
-            SectionType sectionType = entry.getKey();
-            AbstractSection abstractSection = entry.getValue();
-            dos.writeUTF(sectionType.name());
-            switch (sectionType) {
-                case PERSONAL, OBJECTIVE -> dos.writeUTF(((TextSection) abstractSection).getContact());
-                case ACHIEVEMENT, QUALIFICATIONS ->
-                        writeWithException(dos, ((ListSection) abstractSection).getList(), dos::writeUTF);
-                case EXPERIENCE, EDUCATION ->
-                        writeWithException(dos, ((OrganizationSection) abstractSection).getOrganizations(), organization -> {
-                            dos.writeUTF(organization.getHomePage().getName());
-                            dos.writeUTF(organization.getHomePage().getUrl());
-                            writeWithException(dos, organization.getPeriods(), period -> {
-                                writeLocalDate(dos, period.getStart());
-                                writeLocalDate(dos, period.getEnd());
-                                dos.writeUTF(period.getTitle());
-                                dos.writeUTF(period.getDescription());
+            writeCollection(dos, r.getSections().entrySet(), entry -> {
+                SectionType type = entry.getKey();
+                Section section = entry.getValue();
+                dos.writeUTF(type.name());
+                switch (type) {
+                    case PERSONAL, OBJECTIVE -> dos.writeUTF(((TextSection) section).getContent());
+                    case ACHIEVEMENT, QUALIFICATIONS ->
+                            writeCollection(dos, ((ListSection) section).getItems(), dos::writeUTF);
+                    case EXPERIENCE, EDUCATION ->
+                            writeCollection(dos, ((OrganizationSection) section).getOrganizations(), org -> {
+                                dos.writeUTF(org.getHomePage().getName());
+                                dos.writeUTF(org.getHomePage().getUrl());
+                                writeCollection(dos, org.getPositions(), position -> {
+                                    writeLocalDate(dos, position.getStartDate());
+                                    writeLocalDate(dos, position.getEndDate());
+                                    dos.writeUTF(position.getTitle());
+                                    dos.writeUTF(position.getDescription());
+                                });
                             });
-                        });
-            }
-        });
-    }
-
-    private <T> void writeWithException(DataOutputStream dos, Collection<T> collection, Consumer<T> writer) throws IOException {
-        dos.writeInt(collection.size());
-        for (T item : collection) {
-            writer.accept(item);
+                }
+            });
         }
     }
 
@@ -90,50 +55,68 @@ public class DataStreamSerializer implements StreamSerializer {
         return LocalDate.of(dis.readInt(), dis.readInt(), 1);
     }
 
-    private void readWithException(DataInputStream dis, Runnable runnable) throws IOException {
-        int size = dis.readInt();
-        for (int i = 0; i < size; i++) {
-            runnable.run();
+    @Override
+    public Resume doRead(InputStream is) throws IOException {
+        try (DataInputStream dis = new DataInputStream(is)) {
+            String uuid = dis.readUTF();
+            String fullName = dis.readUTF();
+            Resume resume = new Resume(uuid, fullName);
+            readItems(dis, () -> resume.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
+            readItems(dis, () -> {
+                SectionType sectionType = SectionType.valueOf(dis.readUTF());
+                resume.setSection(sectionType, readSection(dis, sectionType));
+            });
+            return resume;
         }
     }
 
-    private AbstractSection readSection(DataInputStream dis, SectionType sectionType) throws IOException {
+    private Section readSection(DataInputStream dis, SectionType sectionType) throws IOException {
         return switch (sectionType) {
             case PERSONAL, OBJECTIVE -> new TextSection(dis.readUTF());
             case ACHIEVEMENT, QUALIFICATIONS -> new ListSection(readList(dis, dis::readUTF));
             case EXPERIENCE, EDUCATION -> new OrganizationSection(
                     readList(dis, () -> new Organization(
                             new Link(dis.readUTF(), dis.readUTF()),
-                            readList(dis, () -> new Organization.Period(
+                            readList(dis, () -> new Organization.Position(
                                     readLocalDate(dis), readLocalDate(dis), dis.readUTF(), dis.readUTF()
                             ))
                     )));
+            default -> throw new IllegalStateException();
         };
     }
 
-    private <T> List<T> readList(DataInputStream dis, Supplier<T> supplier) throws IOException {
+    private <T> List<T> readList(DataInputStream dis, ElementReader<T> reader) throws IOException {
         int size = dis.readInt();
-        List<T> list = new ArrayList<>();
+        List<T> list = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            list.add(supplier.get());
+            list.add(reader.read());
         }
         return list;
     }
 
-    @FunctionalInterface
-    private interface Supplier<T> {
-        T get() throws IOException;
+    private interface ElementProcessor {
+        void process() throws IOException;
     }
 
-    @FunctionalInterface
-    private interface Consumer<T> {
-        void accept(T item) throws IOException;
+    private interface ElementReader<T> {
+        T read() throws IOException;
     }
 
-    @FunctionalInterface
-    private interface Runnable {
-        void run() throws IOException;
+    private interface ElementWriter<T> {
+        void write(T t) throws IOException;
+    }
+
+    private void readItems(DataInputStream dis, ElementProcessor processor) throws IOException {
+        int size = dis.readInt();
+        for (int i = 0; i < size; i++) {
+            processor.process();
+        }
+    }
+
+    private <T> void writeCollection(DataOutputStream dos, Collection<T> collection, ElementWriter<T> writer) throws IOException {
+        dos.writeInt(collection.size());
+        for (T item : collection) {
+            writer.write(item);
+        }
     }
 }
-
-
