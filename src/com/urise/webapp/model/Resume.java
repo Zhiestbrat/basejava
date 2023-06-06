@@ -15,6 +15,17 @@ import java.util.*;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Resume implements Serializable {
+
+    public static final Resume EMPTY = new Resume();
+
+    static {
+        EMPTY.setSectionType(SectionType.OBJECTIVE, TextSection.EMPTY);
+        EMPTY.setSectionType(SectionType.PERSONAL, TextSection.EMPTY);
+        EMPTY.setSectionType(SectionType.ACHIEVEMENT, ListSection.EMPTY);
+        EMPTY.setSectionType(SectionType.QUALIFICATIONS, ListSection.EMPTY);
+        EMPTY.setSectionType(SectionType.EXPERIENCE, new OrganizationSection(Organization.EMPTY));
+        EMPTY.setSectionType(SectionType.EDUCATION, new OrganizationSection(Organization.EMPTY));
+    }
     @Serial
     private static final long serialVersionUID = 1L;
     // Unique identifier

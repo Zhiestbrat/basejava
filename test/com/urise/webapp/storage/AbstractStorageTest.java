@@ -16,7 +16,7 @@ import static com.urise.webapp.TestData.*;
 import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractStorageTest {
-    protected final static File STORAGE_DIR = Config.getInstance().getStorageDir();
+    protected final static File STORAGE_DIR = Config.get().getStorageDir();
     protected final Storage storage;
 
     protected AbstractStorageTest(Storage storage) {
